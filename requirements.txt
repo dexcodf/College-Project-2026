@@ -2,3 +2,16 @@ pandas>=2.0
 numpy>=1.24
 scikit-learn>=1.3
 joblib>=1.3
+flask>=3.0
+streamlit>=1.30
+altair>=5.0
+
+# --- SignBridge (sign_language_tts) deploy deps ---
+# Streamlit Community Cloud installs this root requirements.txt, so the live app
+# needs these here too. Heavy optional extras (torch/tensorflow/transformers)
+# stay in sign_language_tts/requirements-extras.txt and are NOT deployed.
+mediapipe>=0.10
+streamlit-webrtc>=0.47
+pillow>=10.0
+supertonic>=1.2
+soundfile>=0.12
