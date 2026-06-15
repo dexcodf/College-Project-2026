@@ -53,7 +53,7 @@ def main() -> None:
         _die(f"admin login failed ({r.status_code}): {r.text}")
     token = r.json()["access_token"]
     s.headers["Authorization"] = f"Bearer {token}"
-    print(f"✓ authenticated as {ADMIN_EMAIL}")
+    print(f"[ok] authenticated as {ADMIN_EMAIL}")
 
     # 2) Upload the sample knowledge base.
     existing = {d["filename"] for d in s.get(f"{BACKEND_URL}/api/documents").json()}
@@ -62,7 +62,7 @@ def main() -> None:
         _die(f"no sample documents found in {SAMPLE_DIR}")
     for doc in docs:
         if doc.name in existing:
-            print(f"• {doc.name} already indexed — skipping")
+            print(f"- {doc.name} already indexed — skipping")
             continue
         r = s.post(
             f"{BACKEND_URL}/api/documents",
@@ -71,9 +71,9 @@ def main() -> None:
         )
         if r.status_code == 201:
             body = r.json()
-            print(f"✓ ingested {doc.name}: {body['chunks_created']} chunks")
+            print(f"[ok] ingested {doc.name}: {body['chunks_created']} chunks")
         else:
-            print(f"✗ {doc.name}: {r.status_code} {r.text}")
+            print(f"[x] {doc.name}: {r.status_code} {r.text}")
 
     # 3) Ask demo questions to populate chats + analytics.
     for q in DEMO_QUESTIONS:
@@ -81,11 +81,11 @@ def main() -> None:
             f"{BACKEND_URL}/api/chat/ask", json={"message": q}, timeout=120
         )
         if r.status_code != 200:
-            print(f"✗ ask failed: {r.status_code} {r.text}")
+            print(f"[x] ask failed: {r.status_code} {r.text}")
             continue
         msg = r.json()["message"]
         print(
-            f"✓ asked: {q[:48]:50s} → route={msg['agent_route']:9s} "
+            f"[ok] asked: {q[:48]:50s} -> route={msg['agent_route']:9s} "
             f"cites={len(msg['citations'])}"
         )
         # Leave a thumbs-up so the feedback rate is non-trivial.
@@ -95,7 +95,7 @@ def main() -> None:
             timeout=30,
         )
 
-    print("\n🎉 Demo data seeded. Open the Analytics page to see it populated.")
+    print("\n[done] Demo data seeded. Open the Analytics page to see it populated.")
 
 
 if __name__ == "__main__":
