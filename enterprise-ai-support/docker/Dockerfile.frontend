@@ -1,0 +1,21 @@
+# ---- Frontend (Streamlit) image ----
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# The frontend only needs a slim subset of the requirements.
+RUN pip install --upgrade pip && pip install \
+    streamlit==1.41.1 \
+    plotly==5.24.1 \
+    streamlit-extras==0.5.0 \
+    requests==2.32.3
+
+COPY frontend ./frontend
+COPY .streamlit ./.streamlit
+
+EXPOSE 8501
+
+CMD ["sh", "-c", "streamlit run frontend/streamlit_app.py --server.port ${STREAMLIT_PORT:-8501} --server.address 0.0.0.0"]

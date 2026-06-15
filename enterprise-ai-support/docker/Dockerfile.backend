@@ -1,0 +1,26 @@
+# ---- Backend (FastAPI) image ----
+FROM python:3.11-slim AS base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+# System deps: tesseract for OCR, ffmpeg for Whisper audio decoding.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr \
+    ffmpeg \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+COPY app ./app
+COPY .env.example ./.env.example
+
+EXPOSE 8000
+
+# Honour $PORT if the platform injects one (Render/Fly/Cloud Run).
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${API_PORT:-8000}"]
