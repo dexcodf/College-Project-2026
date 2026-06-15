@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------------------
+# Two services share one image:
+#   * api       -> FastAPI backend on :8000
+#   * streamlit -> Streamlit UI on :8501, routed to the API via API_URL
+# Trained models + caches are shared through named/volume mounts.
+# ---------------------------------------------------------------------------
+version: "3.9"
+
+services:
+  api:
+    build: .
+    image: hinglish-sentiment:latest
+    container_name: hinglish-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./saved_models:/app/saved_models
+      - hf-cache:/app/.cache/huggingface
+    environment:
+      - MODEL_NAME=${MODEL_NAME:-ai4bharat/indic-bert}
+      - WHISPER_MODEL=${WHISPER_MODEL:-base}
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+
+  streamlit:
+    build: .
+    image: hinglish-sentiment:latest
+    container_name: hinglish-streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./saved_models:/app/saved_models
+      - hf-cache:/app/.cache/huggingface
+    environment:
+      - API_URL=http://api:8000
+    command: streamlit run streamlit_app/app.py --server.port 8501 --server.address 0.0.0.0
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  hf-cache:

@@ -1,0 +1,48 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ---- Virtual envs ----
+venv/
+.venv/
+env/
+ENV/
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- Data & models (large artifacts) ----
+data/raw/
+data/processed/
+data/*.csv
+data/*.parquet
+saved_models/*
+!saved_models/.gitkeep
+
+# ---- Training / eval outputs ----
+outputs/
+reports/*.png
+reports/*.json
+*.log
+
+# ---- Whisper / audio temp ----
+*.wav
+*.mp3
+*.m4a
+tmp_audio/
+
+# ---- OS / IDE ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---- Env ----
+.env

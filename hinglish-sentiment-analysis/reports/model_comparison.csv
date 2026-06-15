@@ -1,0 +1,2 @@
+model,accuracy,f1_macro,f1_weighted
+baseline,0.575,0.5784120217635701,0.5721950738999919
