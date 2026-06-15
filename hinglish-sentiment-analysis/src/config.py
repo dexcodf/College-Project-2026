@@ -7,10 +7,19 @@ data / model / api / streamlit layers stay in sync.
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import torch
+
+# Make stdout/stderr UTF-8 so log output never crashes on non-ASCII characters
+# under Windows' default cp1252 console encoding (no-op where already UTF-8).
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
 
 # --------------------------------------------------------------------------- #
 # Paths

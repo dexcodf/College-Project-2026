@@ -149,7 +149,7 @@ def train(run_eval: bool = True):
         if va_acc > best_val_acc:
             best_val_acc, patience = va_acc, 0
             model.save(CONFIG.best_model_path, tokenizer=tokenizer)
-            print(f"[train]   ↳ new best (val_acc={va_acc:.4f}) saved to "
+            print(f"[train]   -> new best (val_acc={va_acc:.4f}) saved to "
                   f"{CONFIG.best_model_path}")
         else:
             patience += 1
